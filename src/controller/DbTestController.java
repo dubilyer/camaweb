@@ -31,7 +31,7 @@ public class DbTestController {
 	
 		AbstractApplicationContext ctx = new FileSystemXmlApplicationContext("beans.xml");
 		TestModel tm = (TestModel)ctx.getBean("database");
-		tm.generateRandomAdministrators(ADMINS_QUANTITY);
+	/*	tm.generateRandomAdministrators(ADMINS_QUANTITY);
 		tm.GenerateRandomEduOrgs(EDU_ORGS_QUANTITY);
 		tm.generateRandomStudyGroups(STUDY_GROUPS_QUANTITY, EDU_ORGS_QUANTITY);
 		tm.generateRandomManagers(MANAGERS_QUANTITY, ADMINS_QUANTITY, EDU_ORGS_QUANTITY);
@@ -48,7 +48,7 @@ public class DbTestController {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-		}
+		}*/
 //		tm.printData();
 		
 		tm.printCreator();
