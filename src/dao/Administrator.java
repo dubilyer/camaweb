@@ -1,7 +1,6 @@
 package dao;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +10,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class Administrator extends User {
 	@OneToMany(fetch=FetchType.EAGER,mappedBy = "administrator")
-	List<Manager> managers;
+	Set<Manager> managers;
 	
 	public Administrator() {
 		super();
@@ -19,14 +18,14 @@ public class Administrator extends User {
 	
 	public Administrator(String firstName, String lastName, String username) {
 		super(firstName, lastName, username);
-		managers = new LinkedList<>();
+		managers = new HashSet<Manager>();
 	}
 
-	public List<Manager> getManagers() {
+	public Set<Manager> getManagers() {
 		return managers;
 	}
 
-	public void setManagers(List<Manager> managers) {
+	public void setManagers(Set<Manager> managers) {
 		this.managers = managers;
 	}
 	

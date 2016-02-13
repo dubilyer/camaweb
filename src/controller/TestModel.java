@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import dao.Message;
 import dao.Parent;
 import dao.StudyGroup;
 import dao.User;
+import daoData.AdminData;
 import interfaces.ICama;
 
 public class TestModel implements ICama {
@@ -487,8 +489,22 @@ public class TestModel implements ICama {
 	 	
 	 	public Map<String, Object> getAdmin(int id){
 			Map<String, Object> result = new HashMap<>();
-			result.put("result", true);
-			result.put("Administrator", em.find(Administrator.class, id));
+			Administrator admin = em.find(Administrator.class, id);
+			if(admin == null){
+				result.put("Error", "No admin with such Id");
+				return result;
+			}
+			Set<Manager> managers = admin.getManagers();
+			Set<Integer> managersIds = new HashSet<Integer>();
+			for(Manager manager:managers){
+				int managerId = manager.getId();
+				managersIds.add(managerId);
+			}
+			AdminData adminData = new AdminData(id, true, admin.getFirstName(), admin.getLastName(), 
+					admin.getDescription(), admin.getEmail(),
+					admin.getRegDate(), admin.getLastLoginDate(), 
+					admin.getUsername(), managersIds);
+			result.put("Success", adminData);
 			return result ;
 	 		
 	 	}
