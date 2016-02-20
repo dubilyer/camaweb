@@ -29,7 +29,7 @@ public class EducationOrganization {
 		return eduOrgId;
 	}
 
-	@OneToMany(mappedBy="eduOrg")
+	@OneToMany(fetch=FetchType.EAGER,mappedBy="eduOrg")
 	Set<StudyGroup> groups;
 
 	@OneToOne

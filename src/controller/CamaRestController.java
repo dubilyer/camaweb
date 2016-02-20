@@ -107,4 +107,13 @@ public class CamaRestController {
 	database.generateRandomEducators(EDUCATORS_QUANTITY, MANAGERS_QUANTITY);
 	database.generateRandomFamilyMembers(FAMILY_MEMBERS_QUANTITY, CHILDS_QUANTITY);*/
 	}
+	@RequestMapping(value="getChildrenByParent"+"/{parentId}", method=RequestMethod.GET)
+	public Map<String, Object> getChildrenByParent(@PathVariable int parentId){
+		return database.getChildrenByParent(parentId);
+	}
+	
+	@RequestMapping(value="getEducatorsByChild"+"/{childId}", method=RequestMethod.GET)
+	public Map<String,Object> getEducatorByChild(@PathVariable int childId){
+		return database.getEducatorsByChild(childId);
+	}
 }

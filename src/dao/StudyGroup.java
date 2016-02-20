@@ -22,8 +22,6 @@ public class StudyGroup {
 	Set<Child> children;
 
 	@ManyToMany(mappedBy="groups",fetch = FetchType.EAGER)
-	//@JoinTable(name="groups_educators", joinColumns={@JoinColumn(name="group_id")}, 
-	//inverseJoinColumns={@JoinColumn(name="educator_id")})
 	Set<Educator> educators;
 
 	public StudyGroup(String groupName, EducationOrganization eduOrg) {

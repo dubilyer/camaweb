@@ -29,7 +29,9 @@ import dao.Parent;
 import dao.StudyGroup;
 import dao.User;
 import daoData.AdminData;
+import daoData.ChildData;
 import daoData.EducatorData;
+import daoData.GroupData;
 import daoData.ManagerData;
 import interfaces.ICama;
 
@@ -498,4 +500,93 @@ public class TestModel implements ICama {
 	 		result.put("Success", eduOrg.getGroups());
 	 		return result;
 	 	}
+	 	public Map<String,Object> getChildrenByParent(int parentId){
+	 		Map<String,Object> result = new HashMap<String,Object>();
+	 		Parent parent = em.find(Parent.class, parentId);
+	 		if(parent == null){
+	 			result.put("Error", "Incorrect parent id");
+	 			return result;
+	 		}
+	 		Set<Child> children = parent.getChildren();
+	 		Set<ChildData> childrenData = new HashSet<ChildData>();
+	 		for(Child child:children){
+	 			ChildData childData = new ChildData(child.getId(),child.getFirstName(),child.getLastName(),null,0,
+	 					null,0,null);
+	 			childrenData.add(childData);
+	 		}
+	 		result.put("Success",childrenData);
+			return result;
+	 	}
+	 	
+	 	public Map<String,Object> getEducatorsByChild(int childId){
+	 		Map<String,Object> result = new HashMap<String,Object>();
+	 		Child child = em.find(Child.class, childId);
+	 		if(child == null){
+	 			result.put("Error", "Incorrect child ID");
+	 			return result;
+	 		}
+	 		StudyGroup group = child.getGroup();
+	 		Set<Educator> educators = group.getEducators();
+	 		Set<EducatorData> educatorsData = new HashSet<EducatorData>();
+	 		for(Educator educator:educators){
+	 			Set<Integer> groupsIds = new HashSet<Integer>();
+	 			Set<StudyGroup> groups = educator.getGroups();
+	 			for(StudyGroup gr:groups){
+	 				groupsIds.add(gr.getGroupId());
+	 			}
+	 			EducatorData educatorData = new EducatorData(educator.getId(), educator.isEnabled(),
+	 					educator.getFirstName(), educator.getLastName(), educator.getDescription(),
+	 					educator.getEmail(), educator.getRegDate(), educator.getLastLoginDate(),
+	 					educator.getUsername(), educator.getEduOrg().getEduOrgId(), 
+	 					groupsIds, educator.getSubject());
+	 			educatorsData.add(educatorData);
+	 		}
+	 		result.put("Success", educatorsData);
+	 		return result;
+	 	}
+	 	
+	 	public Map<String,Object> getGroupsByEducator(int educatorId){
+	 		Map<String,Object> result = new HashMap<String,Object>();
+	 		Educator educator = em.find(Educator.class, educatorId);
+	 		if(educator == null){
+	 			result.put("Error", "Incorrect educator ID");
+	 			return result;
+	 		}
+	 		Set<StudyGroup> groups = educator.getGroups();
+	 		Set<GroupData>  groupsData = new HashSet<GroupData>();
+	 		for(StudyGroup group:groups){
+	 			Set<Integer> childrenIds = new HashSet<Integer>();
+	 			Set<Integer> educatorsIds = new HashSet<Integer>();
+	 			for(Child child:group.getChildren()){
+	 				childrenIds.add(child.getId());
+	 			}
+	 			for(Educator ed:group.getEducators()){
+	 				educatorsIds.add(ed.getId());
+	 			}
+	 			GroupData groupData = new GroupData(group.getGroupId(),group.getGroupName(),
+	 									group.getEduOrg().getEduOrgId(),childrenIds,educatorsIds);
+	 			groupsData.add(groupData);
+	 		}
+	 		result.put("Success", groupsData);
+	 		return result;
+	 	}
+	 	
+	 	public Map<String,Object> getChildrenByGroup(int groupId){
+	 		Map<String,Object> result = new HashMap<String,Object>();
+	 		StudyGroup group = em.find(StudyGroup.class, groupId);
+	 		if(group == null){
+	 			result.put("Error", "Incorrect group ID");
+	 			return result;
+	 		}
+	 		Set<Child> children = group.getChildren();
+	 		Set<ChildData> childrenData = new HashSet<ChildData>();
+	 		for(Child child:children){
+	 			ChildData childData = new ChildData(child.getId(), child.getFirstName(), child.getLastName(),
+	 					child.getAddress().toString(), child.getGroup().getGroupId(), null,child.getParent().getId(),null);
+	 			childrenData.add(childData);
+	 		}
+	 		result.put("Success", childrenData);
+	 		return result;
+	 	}
+
 }
