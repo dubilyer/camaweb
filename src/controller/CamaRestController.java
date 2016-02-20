@@ -1,5 +1,7 @@
 package controller;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,76 @@ public class CamaRestController {
 		return database.getAdmin(id);
 	}
 	
+	@RequestMapping(value="getManagers", method=RequestMethod.GET)
+	public Map<String, Object>getManagers(){
+		return database.getManagersByLastName("");
+	}
+	
+	@RequestMapping(value="getManagersByAdmin"+"/{adminId}", method=RequestMethod.GET)
+	public Map<String, Object>getManagers(@PathVariable int adminId){
+		return database.getManagers(adminId);
+	}
+	
+	@RequestMapping(value="getManagersByLastName"+"/{pattern}", method=RequestMethod.GET)
+	public Map<String, Object>getManagersByLastName(@PathVariable String pattern){
+		return database.getManagersByLastName(pattern);
+	}
+	
+	@RequestMapping(value="getMessages", method=RequestMethod.GET)
+	public Map<String, Object>getMessages(){
+		return database.getMessagesByUser("");
+	}
+	
+	@RequestMapping(value="getMessagesByUser"+"/{pattern}", method=RequestMethod.GET)
+	public Map<String, Object>getMessagesByUser(@PathVariable String pattern){
+		return database.getMessagesByUser(pattern);
+	}
+	/**
+	 * Problem((
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
+	 */
+	@RequestMapping(value="getMessagesByTime"+"/{date}", method=RequestMethod.GET)
+	public Map<String, Object> getMessagesByTime(@PathVariable Date date) throws ParseException{
+		return database.getMessagesByTime(date);
+	}
+	
+	//Todo
+	//@RequestMapping(value="getMessagesByUserAndTime"+"/{pattern}" + "/{beginDate}" + "/{endDate}", 
+	//method=RequestMethod.GET)
+	 
+	/**to check
+	 * 
+	 * @param managerId
+	 * @return
+	 */
+	@RequestMapping(value="getGroupsByManager"+"/{managerId}", method=RequestMethod.GET)
+	public Map<String, Object> getGroupsByManager(@PathVariable int managerId){
+		return database.getGroupsByManager(managerId);
+	}
+	
+	//Todo
+	//@RequestMapping(value="checkAttendance"+"/{childId}", method=RequestMethod.GET)
+	//Todo
+	//@RequestMapping(value="checkAttendance"+"/{groupId}", method=RequestMethod.GET)
+	//Todo
+	//@RequestMapping(value="getHistort"+"/{beginDate}" + "/{endDate}, method=RequestMethod.GET)
+	/**
+	 * to check
+	 * @param managerId
+	 * @param lastName
+	 * @return
+	 */
+	@RequestMapping(value="getEducatorsByLastName"+"/{managerId}"+"/{lastName}", method=RequestMethod.GET)
+	public Map<String, Object> getEducatorsByLastName(@PathVariable int managerId, @PathVariable String lastName){
+		return database.getEducatorsByLastName(managerId, lastName);
+	}
+	
 	@RequestMapping(value="generateDB", method=RequestMethod.GET)
-	public void generateDB(){
-	/*database.generateRandomAdministrators(ADMINS_QUANTITY);
+	public void generateDB() throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+	database.addMessage(1, 2, "dsfg", "Administrator", "Manager");
+		/*database.generateRandomAdministrators(ADMINS_QUANTITY);
 	database.GenerateRandomEduOrgs(EDU_ORGS_QUANTITY);
 	database.generateRandomStudyGroups(STUDY_GROUPS_QUANTITY, EDU_ORGS_QUANTITY);
 	database.generateRandomManagers(MANAGERS_QUANTITY, ADMINS_QUANTITY, EDU_ORGS_QUANTITY);

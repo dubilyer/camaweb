@@ -9,6 +9,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 public class Message {
 	@Id
@@ -19,8 +21,13 @@ public class Message {
 	@Transient
 	User reciever;
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	Date sendingTime;
 	String message, fromTo;
+	public String getFromTo() {
+		return fromTo;
+	}
+
 	Class receiverType, senderType;
 	int receiverId, senderId;
 public Message() {

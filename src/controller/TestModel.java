@@ -1,11 +1,12 @@
 package controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
@@ -28,6 +29,8 @@ import dao.Parent;
 import dao.StudyGroup;
 import dao.User;
 import daoData.AdminData;
+import daoData.EducatorData;
+import daoData.ManagerData;
 import interfaces.ICama;
 
 public class TestModel implements ICama {
@@ -159,7 +162,9 @@ public class TestModel implements ICama {
 		User sender = (User) senderClass.newInstance();
 		User receiver = (User) receiverClass.newInstance();
 		sender = (User) em.find(senderClass, senderId);
+		System.out.println(sender);
 		receiver = (User) em.find(receiverClass, recieverId);
+		System.out.println(receiver);
 		Message new_message = new Message(sender, receiver, message);
 		em.persist(new_message);
 		return true;
@@ -391,4 +396,106 @@ public class TestModel implements ICama {
 			return result ;
 	 		
 	 	}
-	}
+	 	public Map<String, Object> getManagers(int adminId){
+	 		Map<String, Object> result = new HashMap<>();
+	 		Administrator administrator = em.find(Administrator.class, adminId);
+	 		Set<Manager> managers = administrator.getManagers();
+	 		Set<ManagerData> managerDatas = new HashSet<>();
+	 		for (Manager manager : managers) {
+				ManagerData managerData = new ManagerData(manager.getId(), manager.isEnabled(), manager.getFirstName(),
+						manager.getLastName(), manager.getDescription(), manager.getEmail(), manager.getRegDate(), 
+						manager.getLastLoginDate(), manager.getUsername(), manager.getAdministrator().getId(), 
+						manager.getEduOrg().getEduOrgId(), manager.getPosition());
+				managerDatas.add(managerData);
+			}
+	 		result.put("Success", managerDatas);
+	 		return result;
+	 	}
+	 	
+	 	public Map<String, Object> getManagersByLastName(String lastName){
+	 		Map<String, Object> result = new HashMap<>();
+	 		String q = "SELECT m FROM Manager m WHERE m.lastName LIKE ?1";
+	 		Query query = em.createQuery(q);
+	 		if (lastName==null) lastName="";
+	 		query.setParameter(1, "%"+lastName+"%");
+	 		@SuppressWarnings("unchecked")
+			Iterable<Manager> managers = query.getResultList();
+	 		Set<ManagerData> managerDatas = new HashSet<>();
+	 		for (Manager manager : managers) {
+				ManagerData managerData = new ManagerData(manager.getId(), manager.isEnabled(), manager.getFirstName(),
+						manager.getLastName(), manager.getDescription(), manager.getEmail(), manager.getRegDate(), 
+						manager.getLastLoginDate(), manager.getUsername(), manager.getAdministrator().getId(), 
+						manager.getEduOrg().getEduOrgId(), manager.getPosition());
+				managerDatas.add(managerData);
+			}
+			result.put("Success", managerDatas);
+	 		return result;
+	 	}
+
+	 	public Map<String, Object> getMessagesByUser(String fromTo){
+	 		Map<String, Object> result = new HashMap<>();
+	 		String q = "SELECT m FROM Message m";
+	 		if(!fromTo.equals("")) q = q+" WHERE m.fromTo LIKE ?1";
+	 		Query query = em.createQuery(q);
+	 		if(!fromTo.equals("")) query.setParameter(1, "%"+fromTo+"%");;
+	 		result.put("Success", query.getResultList());
+	 		return result;
+	 	}
+	 	
+	 	public Map<String, Object> getMessagesByTime(Date date) throws ParseException{
+	 		Map<String, Object> result = new HashMap<>();
+	 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	 		System.out.println(date);
+	 		String q = "SELECT m FROM Message m WHERE m.sendingTime=?1";
+	 		Query query = em.createQuery(q);
+	 		query.setParameter(1, sdf.format(date));
+	 		result.put("Success", query.getResultList());
+	 		return result;
+	 	}
+	 	
+	 	/**
+	 	 * To check!!
+	 	 * @param managerId
+	 	 * @param lastName
+	 	 * @return
+	 	 */
+	 	public Map<String, Object> getEducatorsByLastName(int managerId, String lastName){
+	 		Map<String, Object> result = new HashMap<>();
+	 		Manager manager = em.find(Manager.class, managerId);
+	 		EducationOrganization eduOrg = manager.getEduOrg();
+	 		String q = "SELECT e FROM Educator m WHERE m.lastName LIKE ?1 AND eduOrg_Id =?2";
+	 		Query query = em.createQuery(q);
+	 		if (lastName==null) lastName="";
+	 		query.setParameter(1, "%"+lastName+"%");
+	 		query.setParameter(2, eduOrg.getEduOrgId());
+	 		@SuppressWarnings("unchecked")
+			Iterable<Educator> educators = query.getResultList();
+	 		Set<EducatorData> educatorDatas = new HashSet<>();
+	 		
+	 		for (Educator educ : educators) {
+	 			Set<Integer> groupsId = new HashSet<>();
+	 			Set<StudyGroup> groups = educ.getGroups();
+	 			for (StudyGroup studyGroup : groups) {
+					groupsId.add(studyGroup.getGroupId());
+				}
+	 			EducatorData educatorData = new EducatorData(educ.getId(), educ.isEnabled(), 
+	 														educ.getFirstName(), educ.getLastName(), 
+	 														educ.getDescription(), educ.getEmail(),
+															educ.getRegDate(), educ.getLastLoginDate(), 
+															educ.getUsername(), educ.getEduOrg().getEduOrgId(), 
+															groupsId, educ.getSubject());
+						educatorDatas.add(educatorData);
+			}
+			result.put("Success", educatorDatas);
+	 		return result;
+	 	}
+	 	
+	 	public Map<String, Object>getGroupsByManager(int managerId){
+	 		Map<String, Object> result = new HashMap<>();
+	 		Manager manager = em.find(Manager.class, managerId);
+	 		EducationOrganization eduOrg = manager.getEduOrg();
+	 		Set<StudyGroup> groups = new HashSet<>();
+	 		result.put("Success", eduOrg.getGroups());
+	 		return result;
+	 	}
+}

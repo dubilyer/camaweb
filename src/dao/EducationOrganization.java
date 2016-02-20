@@ -25,6 +25,10 @@ public class EducationOrganization {
 	@GeneratedValue
 	int eduOrgId;
 
+	public int getEduOrgId() {
+		return eduOrgId;
+	}
+
 	@OneToMany(mappedBy="eduOrg")
 	Set<StudyGroup> groups;
 
