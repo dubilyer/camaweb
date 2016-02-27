@@ -2,14 +2,14 @@ package dao;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
-
 import org.springframework.security.core.GrantedAuthority;
 
 //@SuppressWarnings("serial")
 //@Entity
 public class Authority implements GrantedAuthority, Serializable {
-//	@Id
+
+	private static final long serialVersionUID = -6291981467059992770L;
+	//	@Id
 	String authority;
 //	@ManyToOne
 	User user;

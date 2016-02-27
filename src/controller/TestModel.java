@@ -1,38 +1,11 @@
 package controller;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
+import java.text.*;
+import java.util.*;
+import javax.persistence.*;
 import org.springframework.transaction.annotation.Transactional;
-
-import dao.Address;
-import dao.Administrator;
-import dao.Child;
-import dao.EducationOrganization;
-import dao.Educator;
-import dao.FamilyMember;
-import dao.Log;
-import dao.Manager;
-import dao.Message;
-import dao.Parent;
-import dao.StudyGroup;
-import dao.User;
-import daoData.AdminData;
-import daoData.ChildData;
-import daoData.EducatorData;
-import daoData.GroupData;
-import daoData.ManagerData;
+import dao.*;
+import daoData.*;
 import interfaces.ICama;
 
 public class TestModel implements ICama {
@@ -126,7 +99,7 @@ public class TestModel implements ICama {
 	@Transactional
 	public boolean addEducator(String firstName, String lastName, String username, String description, int managerId) {
 		Manager creator = em.find(Manager.class, managerId);
-		Set<StudyGroup> groups = new HashSet();
+		Set<StudyGroup> groups = new HashSet<StudyGroup>();
 		int num = gen.nextInt(10) + 1;
 		StudyGroup group1 = em.find(StudyGroup.class, num);
 		groups.add(group1);
@@ -200,7 +173,6 @@ public class TestModel implements ICama {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void printCreator() {
 		Message message = em.find(Message.class, (long) 1);
 		System.out.println(em.find(message.getReceiverType(), message.getReceiverId()));
@@ -269,7 +241,7 @@ public class TestModel implements ICama {
 			em.remove(familyMember);
 			res=true;
 		}
-		return false;
+		return res;
 	}
 	@Transactional
 	 @Override
@@ -370,7 +342,6 @@ public class TestModel implements ICama {
 				result.put("Administrator", admin.getId());
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		 return result;
@@ -397,7 +368,7 @@ public class TestModel implements ICama {
 			return result ;
 	 		
 	 	}
-	 	public Map<String, Object> getManagers(int adminId){
+	 	public Map<String, Object> getManagersByAdmin(int adminId){
 	 		Map<String, Object> result = new HashMap<>();
 	 		Administrator administrator = em.find(Administrator.class, adminId);
 	 		Set<Manager> managers = administrator.getManagers();
@@ -495,10 +466,10 @@ public class TestModel implements ICama {
 	 		Map<String, Object> result = new HashMap<>();
 	 		Manager manager = em.find(Manager.class, managerId);
 	 		EducationOrganization eduOrg = manager.getEduOrg();
-	 		Set<StudyGroup> groups = new HashSet<>();
 	 		result.put("Success", eduOrg.getGroups());
 	 		return result;
 	 	}
+	 	
 	 	public Map<String,Object> getChildrenByParent(int parentId){
 	 		Map<String,Object> result = new HashMap<String,Object>();
 	 		Parent parent = em.find(Parent.class, parentId);
@@ -587,5 +558,47 @@ public class TestModel implements ICama {
 	 		result.put("Success", childrenData);
 	 		return result;
 	 	}
+
+		@Override
+		public Map<String, Object> getFamilyMembersByChild(int childId) {
+			Map<String,Object> result = new HashMap<String,Object>();
+			Child child = em.find(Child.class, childId);
+			Set<FamilyMember> familyMembers = child.getFamilyMembers();
+			if(familyMembers == null){
+				result.put("Error", "Child has not family members added to Database");
+				return result;
+			}
+			Set<FamilyMemberData> familyMembersData = new HashSet<FamilyMemberData>();
+			for(FamilyMember member:familyMembers){
+				FamilyMemberData familyMemberData = new FamilyMemberData(member);
+				familyMembersData.add(familyMemberData);
+			}
+			result.put("Success", familyMembersData);
+			return result;
+		}
+
+		@Override
+		public Map<String, Object> getAttStatsByChild(int childId, Date dateFrom, Date dateTo) {
+			Map<String,Object> result = new HashMap<String,Object>();
+			Child child = em.find(Child.class, childId);
+			StudyGroup group = child.getGroup();
+			Query query = em.createQuery("SELECT l FROM Lesson l where (groupId =:groupId) and "
+					+ "(startTime BETWEEN :dateFrom AND :dateTo")
+				.setParameter("groupId", group.getGroupId())
+				.setParameter("dateFrom", dateFrom, TemporalType.TIMESTAMP)
+				.setParameter("dateTo", dateTo, TemporalType.TIMESTAMP);
+			@SuppressWarnings("unchecked")
+			List<Lesson> lessons = query.getResultList();
+			int missedClasses = 0;
+			for(Lesson lesson:lessons){
+				Set<Child> absentChildren = lesson.getAbsentChildren();
+				if(absentChildren.contains(child))
+					missedClasses++;
+			}
+			result.put("Success", child.getFirstName() + " " + child.getLastName() + " missed " 
+			+ missedClasses + " classes");
+			
+			return result;
+		}
 
 }

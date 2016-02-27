@@ -16,7 +16,7 @@ public class Log {
 	String text;
 	String creatorName;
 	int creatorId;
-	Class creatorClass;
+	Class<? extends User> creatorClass;
 
 	
 	public Log(User creator, String text) {
@@ -33,7 +33,7 @@ public class Log {
 		return creatorId;
 	}
 
-	public Class getCreatorClass() {
+	public Class<? extends User> getCreatorClass() {
 		return creatorClass;
 	}
 

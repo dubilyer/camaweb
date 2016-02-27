@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 @Embeddable
 public class Address implements Serializable{
+
+	private static final long serialVersionUID = 9027634789362394054L;
 String country;
 String city;
 String street;

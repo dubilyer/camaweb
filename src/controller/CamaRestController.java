@@ -38,7 +38,7 @@ public class CamaRestController {
 	
 	@RequestMapping(value="getManagersByAdmin"+"/{adminId}", method=RequestMethod.GET)
 	public Map<String, Object>getManagers(@PathVariable int adminId){
-		return database.getManagers(adminId);
+		return database.getManagersByAdmin(adminId);
 	}
 	
 	@RequestMapping(value="getManagersByLastName"+"/{pattern}", method=RequestMethod.GET)

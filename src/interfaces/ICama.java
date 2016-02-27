@@ -1,10 +1,8 @@
 package interfaces;
 
-import java.util.Map;
+import java.util.*;
 
-import dao.Address;
-import dao.Child;
-import dao.User;
+import dao.*;
 
 public interface ICama {
 	
@@ -35,6 +33,12 @@ public interface ICama {
 	boolean removeChild(int id);
 	//Requests
 	public Map<String,Integer> getRolesByTel(String username); // will be used during login to check role, if there are more than one
-
-
+	public Map<String,Object> getEducatorsByChild(int childId);
+	public Map<String, Object> getManagersByAdmin(int adminId);
+	public Map<String, Object>getGroupsByManager(int managerId);
+	public Map<String,Object> getChildrenByParent(int parentId);
+	public Map<String,Object> getGroupsByEducator(int educatorId);
+	public Map<String,Object> getChildrenByGroup(int groupId);
+	public Map<String,Object> getFamilyMembersByChild(int childId);
+	public Map<String,Object> getAttStatsByChild(int childId,Date dateFrom,Date dateTo);
 }

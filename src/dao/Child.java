@@ -4,8 +4,6 @@ import java.util.*;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class Child {
 
@@ -102,6 +100,14 @@ public class Child {
 
 	public void setGroup(StudyGroup group) {
 		this.group = group;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this.id == ((Child)obj).getId())
+			return true;
+		return false;
 	}
 
 

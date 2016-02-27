@@ -24,7 +24,7 @@ public class Message {
 	long id;
 	String message, fromTo;
 	int receiverId, senderId;
-	Class receiverType, senderType;
+	Class<? extends User> receiverType, senderType;
 	@Transient
 	User reciever;
 
@@ -73,7 +73,7 @@ public class Message {
 		return receiverId;
 	}
 
-	public Class getReceiverType() {
+	public Class<? extends User> getReceiverType() {
 		return receiverType;
 	}
 
@@ -89,7 +89,7 @@ public class Message {
 		return senderId;
 	}
 
-	public Class getSenderType() {
+	public Class<? extends User> getSenderType() {
 		return senderType;
 	}
 
