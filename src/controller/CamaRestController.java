@@ -97,7 +97,7 @@ public class CamaRestController {
 	
 	@RequestMapping(value="generateDB", method=RequestMethod.GET)
 	public void generateDB() throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-	database.addMessage(1, 2, "dsfg", "Administrator", "Manager");
+		// database.addMessage(1, 2, "dsfg", "Administrator", "Manager");
 		/*database.generateRandomAdministrators(ADMINS_QUANTITY);
 	database.GenerateRandomEduOrgs(EDU_ORGS_QUANTITY);
 	database.generateRandomStudyGroups(STUDY_GROUPS_QUANTITY, EDU_ORGS_QUANTITY);

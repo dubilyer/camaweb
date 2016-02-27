@@ -157,17 +157,16 @@ public class TestModel implements ICama {
 	}
 
 	@Transactional
-	public boolean addMessage(int senderId, int recieverId, String message, String senderType, String receiverType)
+	public boolean addMessage(int senderId, int recieverId, String message, String senderType, String receiverType, int childId)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Class<?> senderClass = Class.forName("dao." + senderType);
 		Class<?> receiverClass = Class.forName("dao." + receiverType);
 		User sender = (User) senderClass.newInstance();
 		User receiver = (User) receiverClass.newInstance();
 		sender = (User) em.find(senderClass, senderId);
-		System.out.println(sender);
 		receiver = (User) em.find(receiverClass, recieverId);
-		System.out.println(receiver);
-		Message new_message = new Message(sender, receiver, message);
+		Child child = em.find(Child.class, childId);
+		Message new_message = new Message(sender, receiver, message, child);
 		em.persist(new_message);
 		return true;
 	}

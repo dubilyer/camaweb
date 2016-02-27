@@ -21,7 +21,7 @@ public interface ICama {
 	public boolean addFamilyMember(String firstName, String lastName, String phone, String description, int childId);
 	public boolean addEducatorToStudyGroup(int studyGroupId, int educatorId);
 	public boolean addMessage(int senderId, int recieverId, String message, 
-			String senderType, String receiverType) throws ClassNotFoundException, 
+			String senderType, String receiverType, int childId) throws ClassNotFoundException, 
 			InstantiationException, IllegalAccessException;
 	public boolean addLog(int creatorId, String creatorType, String text) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 	// Removers
