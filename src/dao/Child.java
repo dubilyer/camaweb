@@ -47,7 +47,6 @@ public class Child {
 		super();
 	}
 
-
 	public Parent getParent() {
 		return parent;
 	}
