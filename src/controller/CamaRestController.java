@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import interfaces.ICamaURL;
+
 @RestController
 @RequestMapping("/")
 public class CamaRestController {
@@ -24,7 +26,7 @@ public class CamaRestController {
 	private static final int EDUCATORS_QUANTITY = 10;
 	private static final int FAMILY_MEMBERS_QUANTITY = 30;*/
 	
-	@RequestMapping(value="getAdmin"+"/{id}", method=RequestMethod.GET)
+	@RequestMapping(value=ICamaURL.GETADMIN+"/{id}", method=RequestMethod.GET)
 	public Map<String, Object> getAdmin(@PathVariable int id){
 		return database.getAdmin(id);
 	}
