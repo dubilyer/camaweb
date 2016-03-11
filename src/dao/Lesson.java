@@ -28,8 +28,7 @@ public class Lesson {
 	Educator educator;
 	
 	String subject;
-	
-	
+		
 	public Lesson() {
 		super();
 	}
